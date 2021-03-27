@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/noteBar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_baseline_arrow_back_24"
+                android:id="@+id/noteBarBackButton"
+                android:padding="4dp"/>
+
+        </LinearLayout>
+        <com.sendtion.xrichtext.RichTextEditor
+            android:background="#E9E9E9"
+            app:rt_editor_text_line_space="8dp"
+            app:rt_editor_text_size="21sp"
+            android:id="@+id/noteEditor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </com.sendtion.xrichtext.RichTextEditor>
+    </LinearLayout>
+    <ScrollView
+        android:background="#FFFFFF"
+        android:id="@+id/noteToolsBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:src="@drawable/ic_baseline_star_24"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"/>
+            <ImageView
+                android:id="@+id/noteBarSaveButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center|right"
+                android:padding="4dp"
+                android:src="@drawable/ic_baseline_save_24" />
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>
