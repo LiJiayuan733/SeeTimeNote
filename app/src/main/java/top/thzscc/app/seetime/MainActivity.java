@@ -1,6 +1,8 @@
 package top.thzscc.app.seetime;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -8,12 +10,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Application;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.hjq.permissions.OnPermissionCallback;
@@ -23,11 +37,13 @@ import com.hjq.xtoast.XToast;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import cn.hotapk.fastandrutils.utils.FFileUtils;
 import top.thzscc.app.seetime.Adapter.NoteListAdapter;
+import top.thzscc.app.seetime.Struck.PasteItem;
 import top.thzscc.app.seetime.Utils.CommonUtils;
 import top.thzscc.app.seetime.Utils.ContextUtils;
 import top.thzscc.app.seetime.Utils.FileUtils;
@@ -36,10 +52,11 @@ import top.thzscc.app.seetime.Utils.TransmitUtils;
 import top.thzscc.app.seetime.ViewData.NoteData;
 
 public class MainActivity extends AppCompatActivity {
+
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private RecyclerView noteList;          //列表视图
     private ImageView addButton;            //添加按钮
-    private XToast xToast;
+    private ImageView removeButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
         initListener();
 
         CommonUtils.FullScreen(this);
-        showXToast();
     }
+
     private void getPermission(){
         verifyStoragePermissions();
         XXPermissions.with(this).permission(Permission.SYSTEM_ALERT_WINDOW).request(new OnPermissionCallback(){
@@ -83,17 +100,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    private void showXToast(){
-        //TODO: 实现粘贴板跟踪
-        this.xToast=new XToast<>(getApplication())
-                .setView(R.layout.float_copy)
-                .setDraggable().setOnClickListener(new XToast.OnClickListener<View>() {
-                    @Override
-                    public void onClick(XToast<?> toast, View view) {
 
-                    }
-                }).show();
-    }
+
     private void verifyStoragePermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) { // 申请权限
@@ -105,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     public void initView(){
         noteList=findViewById(R.id.mainNoteList);
         addButton=findViewById(R.id.mainAddButton);
-
+        removeButton=findViewById(R.id.mainRemoveButton);
         noteList.setLayoutManager(new LinearLayoutManager(ContextUtils.getContext()));
         noteList.setAdapter(new NoteListAdapter());
     }
@@ -116,6 +124,13 @@ public class MainActivity extends AppCompatActivity {
                 NoteData n=new NoteData(new Date(),"开始记录吧!");
                 TransmitUtils.index=((NoteListAdapter)noteList.getAdapter()).addNote(n);
                 JumpViewTo.NoteView();
+            }
+        });
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ContextUtils.getContext(),"点击你要删除的便签",Toast.LENGTH_SHORT).show();
+                TransmitUtils.remove=true;
             }
         });
     }
@@ -139,7 +154,13 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         noteList.getAdapter().notifyDataSetChanged();
     }
-
+    public void toNote(){
+        TransmitUtils.pasteItemList=new ArrayList<>();
+        ClipboardManager cm = ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE));
+        for(int i=0;i<cm.getPrimaryClip().getItemCount();i++){
+            TransmitUtils.pasteItemList.add(new PasteItem(new Date(),cm.getPrimaryClip().getItemAt(i).coerceToText(this).toString()));
+        }
+    }
     @Override
     protected void onDestroy() {
         save();

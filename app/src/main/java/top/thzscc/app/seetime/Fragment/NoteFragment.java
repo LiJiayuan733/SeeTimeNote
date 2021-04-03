@@ -1,6 +1,9 @@
 package top.thzscc.app.seetime.Fragment;
 
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +16,19 @@ import androidx.fragment.app.Fragment;
 
 import com.sendtion.xrichtext.RichTextEditor;
 
+import java.util.ArrayList;
+import java.util.Date;
+
+import top.thzscc.app.seetime.Adapter.MainPager2Adapter;
+import top.thzscc.app.seetime.Adapter.PasteListAdapter;
 import top.thzscc.app.seetime.R;
+import top.thzscc.app.seetime.Struck.PasteItem;
 import top.thzscc.app.seetime.Utils.ContextUtils;
 import top.thzscc.app.seetime.Utils.HeightProvider;
 import top.thzscc.app.seetime.Utils.TransmitUtils;
+import top.thzscc.app.seetime.View.NoteView;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class NoteFragment extends Fragment {
     private ImageView mSaveButton;
@@ -39,6 +51,25 @@ public class NoteFragment extends Fragment {
     public void initView(){
         mSaveButton=getView().findViewById(R.id.noteBarSaveButton);
         mNoteEditor=getView().findViewById(R.id.noteEditor);
+        mNoteEditor.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                /*if(hasFocus&& (((NotePasteBoardFragment)(((MainPager2Adapter)NoteView.noteView.vp2.getAdapter()).get())).iscan==false)){
+                    toNote();
+                    Log.d("debug", "onFocusChange: dsdsdd");
+                    ((NotePasteBoardFragment)(((MainPager2Adapter)NoteView.noteView.vp2.getAdapter()).get())).iscan=true;
+                    ((NotePasteBoardFragment)(((MainPager2Adapter)NoteView.noteView.vp2.getAdapter()).get())).realSet();
+                }*/
+            }
+            public void toNote(){
+                TransmitUtils.pasteItemList=new ArrayList<>();
+                ClipboardManager cm = ((ClipboardManager)ContextUtils.getContext().getSystemService(Context.CLIPBOARD_SERVICE));
+                for(int i=0;i<cm.getPrimaryClip().getItemCount();i++){
+                    TransmitUtils.pasteItemList.add(new PasteItem(new Date(),cm.getPrimaryClip().getItemAt(i).coerceToText(ContextUtils.getContext()).toString()));
+                }
+            }
+        });
         mBackButton=getView().findViewById(R.id.noteBarBackButton);
         mToolsView=getView().findViewById(R.id.noteToolsBar);
     }

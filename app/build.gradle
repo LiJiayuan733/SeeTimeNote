@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "top.thzscc.app.seetime"
-        minSdkVersion 27
+        minSdkVersion 29
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -37,7 +37,6 @@ dependencies {
     implementation 'com.just.agentweb:filechooser-androidx:4.1.4'
     implementation 'com.download.library:downloader-androidx:4.1.4'
     implementation 'cn.hotapk:fastandrutils:1.0.0'
-    implementation 'com.github.liys666666:LDialog:V2.1.1'
     implementation 'com.github.sendtion:XRichText:1.9.4'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'

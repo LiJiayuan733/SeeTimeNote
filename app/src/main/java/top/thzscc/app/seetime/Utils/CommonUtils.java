@@ -19,9 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 
-/**
- * Created by sendtion on 2016/3/30.
- */
 public class CommonUtils {
 
     /**
@@ -163,5 +160,26 @@ public class CommonUtils {
             lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             activity.getWindow().setAttributes(lp);
         }
+    }
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     *
+     * @param context 上下文
+     * @param dpValue dp值
+     * @return px值
+     */
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    /**
+     *
+     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     *
+     */
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
     }
 }
