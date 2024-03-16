@@ -1,74 +1,40 @@
 package top.thzscc.app.seetime;
 
-import androidx.annotation.NonNull;
+import android.annotation.SuppressLint;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.Application;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.viewpager2.widget.ViewPager2;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
-import com.hjq.xtoast.XToast;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import cn.hotapk.fastandrutils.utils.FFileUtils;
-import top.thzscc.app.seetime.Adapter.NoteListAdapter;
-import top.thzscc.app.seetime.Struck.PasteItem;
-import top.thzscc.app.seetime.Utils.CommonUtils;
-import top.thzscc.app.seetime.Utils.ContextUtils;
-import top.thzscc.app.seetime.Utils.FileUtils;
-import top.thzscc.app.seetime.Utils.JumpViewTo;
-import top.thzscc.app.seetime.Utils.TransmitUtils;
-import top.thzscc.app.seetime.ViewData.NoteData;
+import top.thzscc.app.seetime.Adapter.MainViewPager2Adapter;
+import top.thzscc.app.seetime.Adapter.Pager2TouchListener;
+import top.thzscc.app.seetime.Utils.*;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private RecyclerView noteList;          //列表视图
-    private ImageView addButton;            //添加按钮
-    private ImageView removeButton;
+    private ViewPager2 vp2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ContextUtils.setNowContext(this);
         setContentView(R.layout.activity_main);
 
-        getPermission();
-        try {
-            TransmitUtils.noteDataList=FileUtils.geNote(this);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        getPermission();    //获取权限
+
         //初始化界面
         initView();
         //初始化监听
@@ -110,29 +76,15 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_EXTERNAL_STORAGE);
         }
     }
+
     public void initView(){
-        noteList=findViewById(R.id.mainNoteList);
-        addButton=findViewById(R.id.mainAddButton);
-        removeButton=findViewById(R.id.mainRemoveButton);
-        noteList.setLayoutManager(new LinearLayoutManager(ContextUtils.getContext()));
-        noteList.setAdapter(new NoteListAdapter());
+        vp2=findViewById(R.id.mainViewPager);
+        vp2.setAdapter(new MainViewPager2Adapter(this));
+        vp2.setCurrentItem(0);
     }
+    @SuppressLint("ClickableViewAccessibility")
     public void initListener(){
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NoteData n=new NoteData(new Date(),"开始记录吧!");
-                TransmitUtils.index=((NoteListAdapter)noteList.getAdapter()).addNote(n);
-                JumpViewTo.NoteView();
-            }
-        });
-        removeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ContextUtils.getContext(),"点击你要删除的便签",Toast.LENGTH_SHORT).show();
-                TransmitUtils.remove=true;
-            }
-        });
+        vp2.setOnTouchListener(new Pager2TouchListener());
     }
 
     @Override
@@ -140,8 +92,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //判断是否为从系统权限页返回
         if (requestCode == XXPermissions.REQUEST_CODE) {
-            if (XXPermissions.isGranted(this, Permission.RECORD_AUDIO) &&
-                    XXPermissions.isGranted(this, Permission.Group.CALENDAR)) {
+            if (XXPermissions.isGranted(this, Permission.RECORD_AUDIO) && XXPermissions.isGranted(this, Permission.Group.CALENDAR)) {
                 Toast.makeText(this, "获取权限成功", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this,"获取权限失败",Toast.LENGTH_SHORT).show();
@@ -152,25 +103,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        noteList.getAdapter().notifyDataSetChanged();
     }
-    public void toNote(){
-        TransmitUtils.pasteItemList=new ArrayList<>();
-        ClipboardManager cm = ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE));
-        for(int i=0;i<cm.getPrimaryClip().getItemCount();i++){
-            TransmitUtils.pasteItemList.add(new PasteItem(new Date(),cm.getPrimaryClip().getItemAt(i).coerceToText(this).toString()));
-        }
-    }
+//    public void toNote(){
+//        //获取剪切板列表
+//        TransmitUtils.pasteItemList=new ArrayList<>();
+//        ClipboardManager cm = ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE));
+//        for(int i=0;i<cm.getPrimaryClip().getItemCount();i++){
+//            TransmitUtils.pasteItemList.add(new PasteItem(new Date(),cm.getPrimaryClip().getItemAt(i).coerceToText(this).toString()));
+//        }
+//    }
     @Override
     protected void onDestroy() {
-        save();
         super.onDestroy();
-    }
-    public void save(){
-        try {
-            FileUtils.write(this,"note.fl",FileUtils.reNoteFile(TransmitUtils.noteDataList));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

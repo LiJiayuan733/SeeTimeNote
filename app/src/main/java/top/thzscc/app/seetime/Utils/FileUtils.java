@@ -20,6 +20,11 @@ import cn.hotapk.fastandrutils.utils.FFileUtils;
 import top.thzscc.app.seetime.ViewData.NoteData;
 
 public class FileUtils {
+    /**
+     * @param context 上下文
+     * @param name 文件名
+     * @param Content 要写入内容
+     * */
     public static void write(Context context,String name,String Content) throws IOException {
         /*File file=new File(context.getFilesDir(),name);
         if (!file.exists()){
@@ -30,10 +35,14 @@ public class FileUtils {
         }
 
     }
+    /**
+     * @param context 上下文
+     * @param name 文件名
+     * @return 文件内容
+     * */
     public static String read(Context context,String name) throws FileNotFoundException {
         FileInputStream fis = context.openFileInput(name);
-        InputStreamReader inputStreamReader =
-                new InputStreamReader(fis, StandardCharsets.UTF_8);
+        InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
         StringBuilder stringBuilder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
             String line = reader.readLine();
@@ -46,6 +55,15 @@ public class FileUtils {
         }
         return stringBuilder.toString();
     }
+
+    /* Note File Format
+       $data#split#$content#noteSplit#$data#split#$content
+     */
+
+    /**
+     * @param list 日记列表
+     * @return 格式化后文件内容
+     * */
     public static String reNoteFile(List<NoteData> list){
         StringBuffer sb=new StringBuffer();
         for (NoteData nd:list){
@@ -55,6 +73,10 @@ public class FileUtils {
         s=s.substring(0,s.length()-"#noteSplit#".length());
         return s;
     }
+    /**
+     * @param context 上下文
+     * @return 读取到的日记列表
+     * */
     public static List<NoteData> geNote(Context context) throws FileNotFoundException {
         ArrayList<NoteData> noteData=new ArrayList<>();
         String s=read(context,"note.fl");
@@ -62,7 +84,7 @@ public class FileUtils {
         String[] noteSl=s.split("#noteSplit#");
         for(String sl:noteSl){
             String[] r=sl.split("#split#");
-            noteData.add(new NoteData(new Date(Long.valueOf(r[0])),r[1]));
+            noteData.add(new NoteData(new Date(Long.parseLong(r[0])),r[1]));
         }
         return noteData;
     }

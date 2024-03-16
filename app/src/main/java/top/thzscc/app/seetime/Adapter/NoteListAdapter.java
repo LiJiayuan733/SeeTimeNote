@@ -46,11 +46,12 @@ public class NoteListAdapter extends  RecyclerView.Adapter<NoteListAdapter.ViewH
         return TransmitUtils.noteDataList.size();
     }
 
+    //日记项处理
     class ViewHolder extends RecyclerView.ViewHolder{
         public int index;
         public NoteData noteData;
-        public TextView time;
-        public TextView content;
+        public TextView time;        //时间标签
+        public TextView content;     //内容标签
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.time=itemView.findViewById(R.id.ryNoteItemTime);
@@ -58,6 +59,7 @@ public class NoteListAdapter extends  RecyclerView.Adapter<NoteListAdapter.ViewH
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //如果为删除状态删除日志，不然跳转到详情页
                     if(TransmitUtils.remove==true){
                         TransmitUtils.noteDataList.remove(index);
                         notifyDataSetChanged();
