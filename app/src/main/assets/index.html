@@ -5,21 +5,77 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta
+            name="viewport"
+            content="initial-scale=1.0, user-scalable=no, width=device-width"
+    />
     <title>Document</title>
 </head>
+<link href="js/layui/css/layui.css" rel="stylesheet">
+<script src="js/vue.global.min.js"></script>
+<script src="js/layui/layui.js"></script>
 <style>
-    body {
+    body,html {
         background-color: #D4E5EF;
         color: #FFFFFF;
+        width: 100%;
+        height: 100%;
     }
     div {
         text-align: center;
         background-color: #A3BBDB;
     }
+    #daily-map-note-container {
+        height: 100%;
+        width: 100%;
+    }
+    #daily-map-note {
+        width: 100%;
+        height: 100%;
+    }
 </style>
 <body>
-<div>
-    <h1>测试页面</h1>
+<div id="daily-map-note-container">
+    <div id="daily-map-note"></div>
 </div>
 </body>
+<script>
+    window._AMapSecurityConfig = {
+        securityJsCode: "9a4f884d658d320664e9222d6f68ac6c",
+    };
+
+    const { createApp, ref } = Vue;
+    let element;
+    let layer;
+    let util;
+    let $;
+
+    layui.use(['element', 'layer', 'util'], function(){
+        element = layui.element;
+        layer = layui.layer;
+        util = layui.util;
+        $ = layui.$;
+    });
+</script>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=bc78c2056a3b76a5a6ceab5333cb6562"></script>
+<script>
+    // 119.494741,29.178387
+    // 创建地图实例
+    var map = new AMap.Map("daily-map-note", {
+        zoom: 17,
+        center: [119.494741, 29.178387],
+        resizeEnable: true
+    });
+    var circle = new AMap.Circle({
+        center: new AMap.LngLat("119.494741", "29.178387"), // 圆心位置
+        radius: 3,  //半径
+        strokeColor: "#A3BBDB",  //线颜色
+        strokeOpacity: 1,  //线透明度
+        strokeWeight: 1,  //线粗细度
+        fillColor: "#A3BBDB",  //填充颜色
+        fillOpacity: 0.35 //填充透明度
+    });
+    map.add(circle);
+    map.setFitView();
+</script>
 </html>
