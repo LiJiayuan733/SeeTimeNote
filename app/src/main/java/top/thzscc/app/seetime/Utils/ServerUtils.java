@@ -100,4 +100,36 @@ public class ServerUtils {
             }
         }).start();
     }
+    public static void DeleteIfExits(String time){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Socket socket=new Socket(SERVER_NAME,SERVER_PORT);
+                    PrintWriter pw=new PrintWriter(socket.getOutputStream());
+                    BufferedReader br =new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                    pw.println("DeleteIfExits");
+                    pw.flush();
+
+                    pw.println(time.length());
+                    pw.flush();
+
+                    pw.write(time);
+                    pw.flush();
+
+                    String response=br.readLine();
+                    if (response.equals("OK")){
+                        pw.close();
+                        br.close();
+                        socket.close();
+                    }else{
+                        throw new IOException("Delete failed...");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
 }

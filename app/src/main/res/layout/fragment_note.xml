@@ -11,6 +11,7 @@
             android:id="@+id/noteBar"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:background="@color/c星郎"
             android:orientation="horizontal">
             <ImageView
                 android:layout_gravity="center"
@@ -22,7 +23,7 @@
 
         </LinearLayout>
         <com.sendtion.xrichtext.RichTextEditor
-            android:background="#E9E9E9"
+            android:background="@color/c月白"
             app:rt_editor_text_line_space="8dp"
             app:rt_editor_text_size="21sp"
             android:id="@+id/noteEditor"
@@ -37,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom">
         <LinearLayout
+            android:background="@color/c星郎"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:orientation="horizontal">

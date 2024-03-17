@@ -2,47 +2,33 @@ package top.thzscc.app.seetime.Fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
+import android.view.*;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MotionEventCompat;
 import androidx.fragment.app.Fragment;
-
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.IEventHandler;
-
 import top.thzscc.app.seetime.R;
 
-public class NoteBrowserFragment extends Fragment {
-    private LinearLayout mBrowserParent;
+public class NoteMapBrowserFragment extends Fragment {
     private AgentWeb mAgentWeb;
-    private EditText mUrlTo;
+    private LinearLayout mMapBrowserParent;
     private boolean isScrollX = false;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v=inflater.inflate(R.layout.fragment_browser,container,false);
-        return v;
+        return inflater.inflate(R.layout.fragment_map_browser,container,false);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mBrowserParent=getView().findViewById(R.id.noteBrowserParent);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mMapBrowserParent=getView().findViewById(R.id.noteMapBrowserParent);
         mAgentWeb=AgentWeb.with(this)
-                .setAgentWebParent(mBrowserParent,new LinearLayout.LayoutParams(-1,-1))
-                .useDefaultIndicator(getResources().getColor(R.color.c晴山,null),3)
+                .setAgentWebParent(mMapBrowserParent,new LinearLayout.LayoutParams(-1,-1))
+                .useDefaultIndicator(getResources().getColor(R.color.c月白,null),3)
                 .setEventHanadler(new IEventHandler() {
                     @Override
                     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -57,7 +43,7 @@ public class NoteBrowserFragment extends Fragment {
                         return false;
                     }
                 })
-                .createAgentWeb().ready().go("https://www.baidu.com/");
+                .createAgentWeb().ready().go("file:///android_asset/index.html");
         mAgentWeb.getWebCreator().getWebView().setOnTouchListener(new View.OnTouchListener() {
             private float startX;
             private float startY;
@@ -100,19 +86,8 @@ public class NoteBrowserFragment extends Fragment {
                 return false;
             }
         });
-        mUrlTo=getView().findViewById(R.id.fg_br_urlTo);
-        mUrlTo.setText(mAgentWeb.getWebCreator().getWebView().getUrl());
-        mUrlTo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    mAgentWeb.getUrlLoader().loadUrl(mUrlTo.getText().toString());
-                    return true;
-                }
-                return false;
-            }
-        });
     }
+
     @Override
     public void onDestroyView() {
         mAgentWeb.getWebLifeCycle().onDestroy();

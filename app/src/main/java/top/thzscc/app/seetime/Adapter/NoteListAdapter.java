@@ -1,9 +1,5 @@
 package top.thzscc.app.seetime.Adapter;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +8,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-
 import top.thzscc.app.seetime.R;
 import top.thzscc.app.seetime.Utils.ContextUtils;
 import top.thzscc.app.seetime.Utils.JumpViewTo;
+import top.thzscc.app.seetime.Utils.ServerUtils;
 import top.thzscc.app.seetime.Utils.TransmitUtils;
 import top.thzscc.app.seetime.ViewData.NoteData;
 
@@ -61,6 +56,7 @@ public class NoteListAdapter extends  RecyclerView.Adapter<NoteListAdapter.ViewH
                 public void onClick(View v) {
                     //如果为删除状态删除日志，不然跳转到详情页
                     if(TransmitUtils.remove==true){
+                        ServerUtils.DeleteIfExits(TransmitUtils.noteDataList.get(index).date.getTime()+"");
                         TransmitUtils.noteDataList.remove(index);
                         notifyDataSetChanged();
                         TransmitUtils.remove=false;
