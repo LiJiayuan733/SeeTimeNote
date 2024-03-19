@@ -80,7 +80,6 @@ public class FileUtils {
     public static List<NoteData> geNote(Context context) throws FileNotFoundException {
         ArrayList<NoteData> noteData=new ArrayList<>();
         String s=read(context,"note.fl");
-        Log.d("debug", "geNote: "+s);
         String[] noteSl=s.split("#noteSplit#");
         for(String sl:noteSl){
             String[] r=sl.split("#split#");

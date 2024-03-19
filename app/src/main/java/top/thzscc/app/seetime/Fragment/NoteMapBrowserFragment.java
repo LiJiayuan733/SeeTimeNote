@@ -10,6 +10,7 @@ import androidx.core.view.MotionEventCompat;
 import androidx.fragment.app.Fragment;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.IEventHandler;
+import top.thzscc.app.seetime.Interface.MapJsInterface;
 import top.thzscc.app.seetime.R;
 
 public class NoteMapBrowserFragment extends Fragment {
@@ -28,7 +29,7 @@ public class NoteMapBrowserFragment extends Fragment {
         mMapBrowserParent=getView().findViewById(R.id.noteMapBrowserParent);
         mAgentWeb=AgentWeb.with(this)
                 .setAgentWebParent(mMapBrowserParent,new LinearLayout.LayoutParams(-1,-1))
-                .useDefaultIndicator(getResources().getColor(R.color.c月白,null),3)
+                .useDefaultIndicator(getResources().getColor(R.color.c月白,null),3).addJavascriptInterface("GPSp",new MapJsInterface(mAgentWeb,getContext()))
                 .setEventHanadler(new IEventHandler() {
                     @Override
                     public boolean onKeyDown(int keyCode, KeyEvent event) {

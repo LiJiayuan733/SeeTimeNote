@@ -1,8 +1,8 @@
 package top.thzscc.app.seetime.Utils;
 
 import android.app.Activity;
-import android.util.Log;
 import androidx.recyclerview.widget.RecyclerView;
+import top.thzscc.app.seetime.Struck.GPSPosition;
 import top.thzscc.app.seetime.ViewData.NoteData;
 
 import java.io.BufferedReader;
@@ -125,6 +125,55 @@ public class ServerUtils {
                         socket.close();
                     }else{
                         throw new IOException("Delete failed...");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
+    public static void GPSPositionGet(long StartTime,long EndTime){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    TransmitUtils.positions=new ArrayList<>();
+                    Socket socket=new Socket(SERVER_NAME,SERVER_PORT);
+                    PrintWriter pw=new PrintWriter(socket.getOutputStream());
+                    BufferedReader br =new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                    pw.println("GPSPositionGet");
+                    pw.flush();
+
+                    pw.println(StartTime);
+                    pw.flush();
+
+                    pw.println(EndTime);
+                    pw.flush();
+
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        if(line.equals("END")){
+                            pw.println("OK");
+                            pw.flush();
+                        }else{
+                            //处理数据
+                            //pw.println(rs.getLong("Time")+","+rs.getDouble("wgs84_lng")+","+rs.getDouble("wgs84_lat")+","+rs.getDouble("gcj02_lng")+","+rs.getDouble("gcj02_lat")+","+rs.getDouble("bd09_lng")+","+rs.getDouble("bd09_lat")+","+rs.getDouble("r"));
+                            //1710812663000,2910.85826,11929.33786,2910.85826,11929.33786,2910.897054034114,11929.33596196586,1.28
+                            String[] data =line.split(",");
+                            GPSPosition pos=new GPSPosition();
+                            pos.time = Long.parseLong(data[0]);
+                            pos.wgs84_lng = Double.parseDouble(data[1]);
+                            pos.wgs84_lat = Double.parseDouble(data[2]);
+                            pos.gcj02_lng = Double.parseDouble(data[3]);
+                            pos.gcj02_lat = Double.parseDouble(data[4]);
+                            pos.bd09_lng = Double.parseDouble(data[5]);
+                            pos.bd09_lat = Double.parseDouble(data[6]);
+                            pos.r = Double.parseDouble(data[7]);
+                            pos.status = 1;
+                            TransmitUtils.positions.add(pos);
+                        }
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);

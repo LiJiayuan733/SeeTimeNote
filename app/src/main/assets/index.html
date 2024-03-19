@@ -59,6 +59,8 @@
 </script>
 <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=bc78c2056a3b76a5a6ceab5333cb6562"></script>
 <script>
+    var gps_position=JSON.parse(window.GPSp.getPositions());
+    // window.GPSp.debug(""+ typeof +","+);
     // 119.494741,29.178387
     // 创建地图实例
     var map = new AMap.Map("daily-map-note", {
@@ -66,16 +68,18 @@
         center: [119.494741, 29.178387],
         resizeEnable: true
     });
-    var circle = new AMap.Circle({
-        center: new AMap.LngLat("119.494741", "29.178387"), // 圆心位置
-        radius: 3,  //半径
-        strokeColor: "#A3BBDB",  //线颜色
-        strokeOpacity: 1,  //线透明度
-        strokeWeight: 1,  //线粗细度
-        fillColor: "#A3BBDB",  //填充颜色
-        fillOpacity: 0.35 //填充透明度
-    });
-    map.add(circle);
+    var liter_level=5;
+    for (let i = 0; i < gps_position.length; i+=liter_level) {
+        map.add( new AMap.Circle({
+            center: new AMap.LngLat(gps_position[i]["lng"],gps_position[i]["lat"]), // 圆心位置
+            radius: 1,  //半径
+            strokeColor: "#A3BBDB",  //线颜色
+            strokeOpacity: 1,  //线透明度
+            strokeWeight: 1,  //线粗细度
+            fillColor: "#A3BBDB",  //填充颜色
+            fillOpacity: 0.35 //填充透明度
+        }));
+    }
     map.setFitView();
 </script>
 </html>

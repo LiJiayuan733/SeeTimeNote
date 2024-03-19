@@ -13,7 +13,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.hjq.xtoast.XToast;
 
 import top.thzscc.app.seetime.Adapter.MainPager2Adapter;
-import top.thzscc.app.seetime.Adapter.Pager2TouchListener;
+import top.thzscc.app.seetime.Listener.Pager2TouchListener;
 import top.thzscc.app.seetime.R;
 import top.thzscc.app.seetime.Utils.CommonUtils;
 import top.thzscc.app.seetime.Utils.ContextUtils;

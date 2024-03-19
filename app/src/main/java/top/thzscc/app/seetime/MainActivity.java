@@ -17,10 +17,11 @@ import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 
+import java.util.Date;
 import java.util.List;
 
 import top.thzscc.app.seetime.Adapter.MainViewPager2Adapter;
-import top.thzscc.app.seetime.Adapter.Pager2TouchListener;
+import top.thzscc.app.seetime.Listener.Pager2TouchListener;
 import top.thzscc.app.seetime.Utils.*;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
         initListener();
 
         CommonUtils.FullScreen(this);
+
+        Date date=new Date(System.currentTimeMillis());
+        Date start=new Date(date.getYear(),date.getMonth(),date.getDate(),0,0,0);
+        Date end=new Date(date.getYear(),date.getMonth(),date.getDate(),16,0,0);
+        ServerUtils.GPSPositionGet(start.getTime(),end.getTime());
     }
 
     private void getPermission(){

@@ -1,10 +1,9 @@
 package top.thzscc.app.seetime.Utils;
 
-import android.content.ClipData;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import top.thzscc.app.seetime.Struck.GPSPosition;
 import top.thzscc.app.seetime.Struck.PasteItem;
 import top.thzscc.app.seetime.ViewData.NoteData;
 
@@ -19,6 +18,7 @@ public class TransmitUtils {
     public static NoteData get(){
         return noteDataList.get(index);
     }
+    public static List<GPSPosition> positions;
     public static void set(NoteData data){
         noteDataList.set(index,data);
     }
